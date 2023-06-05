@@ -15,7 +15,7 @@ const rooms = [
     {name: "globalChat", creator: "anonymous"},
     {name: "chess", creator: "anonymous"},
     {name: "javascript", creator: "anonymous"},
-];
+]
 
 io.on("connection", function(socket){
     socket.on("createUser",function(myUsername){
@@ -26,8 +26,12 @@ io.on("connection", function(socket){
         socket.join("globalChat");
         socket.emit("updateChat", "INFO", "You have joined globalChat");
     })
-})
+    socket.on('sendMessage', function(message){
+        io.sockets.to(socket.currentRoom).emit("updateChat", socket.username, message)
+    })
+});
 
 server.listen(PORT, () => {
     console.log(`Server is running at port: ${PORT}`);
-})
+});
+

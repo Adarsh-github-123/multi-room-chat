@@ -17,8 +17,26 @@ socket.on("connect", function(){
     socket.emit("createUser",myUsername);
 })
 
+sendMessageBtn.addEventListener('click', function(){
+    socket.emit('sendMessage', message.value);
+    message.value = "";
+})
+
 socket.on("updateChat", function(username, data){
     if(username === 'INFO') {
         chatDisplay.innerHTML = `<div class='announcement'><span>${data}</span></div>`
+    } else {
+        chatDisplay.innerHTML += `<div class="message_holder ${
+            username === myUsername ? "me" : ""
+          }">
+                                      <div class="pic"></div>
+                                      <div class="message_box">
+                                        <div id="message" class="message">
+                                          <span class="message_name">${username}</span>
+                                          <span class="message_text">${data}</span>
+                                        </div>
+                                      </div>
+                                    </div>`;
     }
+    chatDisplay.scrollTop = chatDisplay.scrollHeight;
 })
