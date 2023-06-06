@@ -17,9 +17,17 @@ socket.on("connect", function(){
     socket.emit("createUser",myUsername);
 })
 
+//send message on click
 sendMessageBtn.addEventListener('click', function(){
     socket.emit('sendMessage', message.value);
     message.value = "";
+})
+
+//send message on enter key press
+message.addEventListener("keyup", function(event){
+  if(event.key === "Enter") {
+    sendMessageBtn.click();
+  }
 })
 
 socket.on("updateChat", function(username, data){
@@ -39,4 +47,14 @@ socket.on("updateChat", function(username, data){
                                     </div>`;
     }
     chatDisplay.scrollTop = chatDisplay.scrollHeight;
-})
+});
+
+function changeRoom( room ) {
+  if(room !== currentRoom) {
+    socket.emit("updateRooms", room);
+    document.getElementById(currentRoom).classList.remove("active_item");
+    currentRoom = room;
+    document.getElementById(currentRoom).classList.add("active_item");
+
+  }
+}

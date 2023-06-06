@@ -29,7 +29,23 @@ io.on("connection", function(socket){
     socket.on('sendMessage', function(message){
         io.sockets.to(socket.currentRoom).emit("updateChat", socket.username, message)
     })
+
+    socket.on("updateRooms", function(room){
+        socket.broadcast
+        .to(socket.currentRoom)
+        .emit("updateChat", "INFO", socket.username + " left room");
+
+        socket.leave(socket.currentRoom);
+        socket.currentRoom = room;
+        socket.join(room);
+        socket.emit("updateChat", "INFO", "You have joined "+ room);
+        socket.broadcast
+        .to(socket.currentRoom)
+        .emit("updateChat", "INFO", socket.username + " has joined",+ room);
+    })
 });
+
+
 
 server.listen(PORT, () => {
     console.log(`Server is running at port: ${PORT}`);
